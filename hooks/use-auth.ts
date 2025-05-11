@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Split } from 'lucide-react';
+import { useAuthStore } from '@/lib/store/auth-store';
 
 // Clave global para la consulta del usuario actual
 export const CURRENT_USER_QUERY_KEY = ['currentUser'];
@@ -22,10 +23,9 @@ export function useLogin() {
 	return useMutation({
 		mutationFn: ({ email, password }: { email: string; password: string }) => api.login(email, password),
 		onSuccess: (data) => {
-			// En una aplicación real, almacenarías el token en localStorage o una cookie segura
-			localStorage.setItem('token', data.token);
-
-			// Invalidar y volver a obtener la consulta del usuario actual
+			const user = { name: data.name, email: data.email };
+			useAuthStore.getState().setUser(user);
+			useAuthStore.getState().setToken(data.token);
 			queryClient.invalidateQueries({ queryKey: CURRENT_USER_QUERY_KEY });
 		},
 	});
@@ -63,15 +63,7 @@ export function useRegister() {
 	});
 }
 
-// Hook para cerrar sesión
-export function useLogout() {
-	const queryClient = useQueryClient();
-
-	return () => {
-		// En una aplicación real, llamarías a un endpoint de API para invalidar el token
-		localStorage.removeItem('token');
-
-		// Restablecer los datos de la consulta del usuario actual
-		queryClient.setQueryData(CURRENT_USER_QUERY_KEY, null);
-	};
-}
+// // Hook para cerrar sesión
+// export function useLogout() {
+// 	const logout = useAuthStore((state) => state.logout);
+// }

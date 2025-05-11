@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRegister } from '@/hooks/use-auth';
@@ -21,14 +21,12 @@ const registerSchema = z
 		lastName: z.string().min(2, 'El apellido debe tener al menos 2 caracteres'),
 		phone: z
 			.string()
-			.min(10, 'El número de celular debe tener al menos 10 caracteres')
-			.max(10, 'El número de celular no puede tener más de 10 caracteres'),
+			.min(9, 'El número de celular debe tener al menos 9 caracteres')
+			.max(15, 'El número de celular no puede tener más de 15 caracteres'),
 		email: z.string().email('Ingresa un email válido'),
 		password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 		confirmPassword: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
-		agreeTerms: z.literal(true, {
-			errorMap: () => ({ message: 'Debes aceptar los términos y condiciones' }),
-		}),
+		agreeTerms: z.boolean().refine((val) => val == true, { message: 'Debes aceptar los términos y condiciones' }),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: 'Las contraseñas no coinciden',
@@ -49,6 +47,7 @@ export default function RegisterPage() {
 	const {
 		register: registerField,
 		handleSubmit,
+		control,
 		formState: { errors, isSubmitting },
 	} = useForm<RegisterFormValues>({
 		resolver: zodResolver(registerSchema),
@@ -59,7 +58,7 @@ export default function RegisterPage() {
 			email: '',
 			password: '',
 			confirmPassword: '',
-			agreeTerms: true,
+			agreeTerms: false,
 		},
 	});
 
@@ -174,17 +173,18 @@ export default function RegisterPage() {
 					</div>
 
 					<div className='flex items-start space-x-2'>
-						<Checkbox id='agreeTerms' {...registerField('agreeTerms')} />
-						<Label htmlFor='agreeTerms' className='text-sm'>
-							Acepto los{' '}
-							<Link href='/terms' className='text-emerald-600 hover:text-emerald-800'>
-								Términos y Condiciones
-							</Link>{' '}
-							y la{' '}
-							<Link href='/privacy' className='text-emerald-600 hover:text-emerald-800'>
-								Política de Privacidad
-							</Link>
-						</Label>
+						<Controller
+							name='agreeTerms'
+							control={control}
+							defaultValue={false}
+							rules={{ required: 'Debes aceptar los términos y condiciones' }}
+							render={({ field }) => (
+								<div className='flex items-center space-x-2'>
+									<Checkbox checked={field.value} onCheckedChange={field.onChange} id='agreeTerms' />
+									<Label htmlFor='agreeTerms'>Acepto los términos y condiciones</Label>
+								</div>
+							)}
+						/>
 					</div>
 					{errors.agreeTerms && <p className='text-sm text-red-500'>{errors.agreeTerms.message}</p>}
 

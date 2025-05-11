@@ -231,17 +231,14 @@ export const api = {
 
 	// User
 	login: async (email: string, password: string) => {
-		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-
-		return {
-			user: {
-				id: 1,
-				name: 'Usuario Demo',
-				email,
-			},
-			token: 'mock-jwt-token',
-		};
+		try {
+			const resposne = await axios.post('http://localhost:3002/api/auth/login', { email, password });
+			return resposne.data;
+		} catch (error: any) {
+			console.log(error);
+			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al iniciar sesión';
+			throw new Error(errorMessage);
+		}
 	},
 
 	register: async (name: string, lastName: string, phone: string, email: string, password: string) => {

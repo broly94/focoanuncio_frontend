@@ -4,12 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, User, Bell, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCurrentUser, useLogout } from '@/hooks/use-auth';
+import { useCurrentUser } from '@/hooks/use-auth';
+import { useAuthStore } from '@/lib/store/auth-store';
+import { isNullOrUndefined } from 'node:util';
 
 export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const { data: currentUser, isLoading } = useCurrentUser();
-	const logout = useLogout();
+	const user = useAuthStore((state) => state.user);
+	const logout = useAuthStore((state) => state.logout);
 
 	const handleLogout = () => {
 		logout();
@@ -58,9 +61,7 @@ export default function Header() {
 					</nav>
 
 					<div className='hidden md:ml-6 md:flex md:items-center'>
-						{isLoading ? (
-							<div className='h-10 w-24 bg-gray-100 animate-pulse rounded-md'></div>
-						) : currentUser ? (
+						{user != null ? (
 							<>
 								<Button variant='ghost' size='icon' className='mr-2'>
 									<Bell className='h-5 w-5' />
@@ -69,9 +70,9 @@ export default function Header() {
 									<div className='group relative'>
 										<Button variant='outline' className='flex items-center space-x-2'>
 											<User className='h-5 w-5' />
-											<span>{currentUser.name.split(' ')[0]}</span>
+											<span>{user.name.split(' ')[0]}</span>
 										</Button>
-										<div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block'>
+										<div className='absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:inline-block'>
 											<Link href='/profile' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
 												Mi Perfil
 											</Link>
