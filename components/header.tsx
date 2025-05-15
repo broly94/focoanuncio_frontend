@@ -4,19 +4,19 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, User, Bell, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCurrentUser } from '@/hooks/use-auth';
 import { useAuthStore } from '@/lib/store/auth-store';
-import { isNullOrUndefined } from 'node:util';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const { data: currentUser, isLoading } = useCurrentUser();
 	const user = useAuthStore((state) => state.user);
 	const logout = useAuthStore((state) => state.logout);
+	const route = useRouter();
 
 	const handleLogout = () => {
 		logout();
 		setIsMenuOpen(false);
+		route.push('/login');
 	};
 
 	return (
@@ -154,19 +154,15 @@ export default function Header() {
 						</Link>
 					</div>
 					<div className='pt-4 pb-3 border-t border-gray-200'>
-						{isLoading ? (
-							<div className='px-4 py-2'>
-								<div className='h-5 w-24 bg-gray-100 animate-pulse rounded-md'></div>
-							</div>
-						) : currentUser ? (
+						{user != null ? (
 							<>
 								<div className='flex items-center px-4'>
 									<div className='flex-shrink-0'>
 										<User className='h-10 w-10 rounded-full bg-gray-100 p-2' />
 									</div>
 									<div className='ml-3'>
-										<div className='text-base font-medium text-gray-800'>{currentUser.name}</div>
-										<div className='text-sm font-medium text-gray-500'>{currentUser.email}</div>
+										<div className='text-base font-medium text-gray-800'>{user.name}</div>
+										<div className='text-sm font-medium text-gray-500'>{user.email}</div>
 									</div>
 								</div>
 								<div className='mt-3 space-y-1'>
