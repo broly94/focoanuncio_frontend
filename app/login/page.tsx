@@ -62,6 +62,10 @@ export default function LoginPage() {
 		}
 	};
 
+	const handleLoginGooel = async () => {
+		router.push(`http://localhost:3002/api/auth/google`);
+	};
+
 	return (
 		<div className='max-w-md mx-auto px-4 py-12'>
 			<div className='text-center mb-8'>
@@ -119,6 +123,13 @@ export default function LoginPage() {
 					<Button type='submit' className='w-full' disabled={isSubmitting}>
 						{isSubmitting ? 'Iniciando sesión...' : 'Iniciar Sesión'}
 					</Button>
+
+					<button
+						onClick={handleLoginGooel}
+						className='w-full flex items-center justify-center bg-white border border-gray-300 rounded-md py-2 text-sm text-gray-700 hover:bg-gray-50'
+					>
+						login google
+					</button>
 				</form>
 
 				<div className='mt-6 text-center'>

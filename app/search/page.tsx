@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import Link from 'next/link';
 import RotatingAd from '@/components/rotating-ad';
-import { useSearchParams } from 'next/navigation';
 
 export default function SearchPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
 	// In a real app, you would use these params to fetch data from your API
