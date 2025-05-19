@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
@@ -26,7 +26,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
 	const router = useRouter();
 	const [showPassword, setShowPassword] = useState(false);
-	const { toast } = useToast();
 	const login = useLogin();
 
 	const {
@@ -62,7 +61,7 @@ export default function LoginPage() {
 		}
 	};
 
-	const handleLoginGooel = async () => {
+	const handleLoginGoogle = async () => {
 		router.push(`http://localhost:3002/api/auth/google`);
 	};
 
@@ -125,7 +124,7 @@ export default function LoginPage() {
 					</Button>
 
 					<button
-						onClick={handleLoginGooel}
+						onClick={handleLoginGoogle}
 						className='w-full flex items-center justify-center bg-white border border-gray-300 rounded-md py-2 text-sm text-gray-700 hover:bg-gray-50'
 					>
 						login google

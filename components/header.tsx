@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const user = useAuthStore((state) => state.user);
+	console.log(user);
 	const logout = useAuthStore((state) => state.logout);
 	const route = useRouter();
 
@@ -70,7 +71,7 @@ export default function Header() {
 									<div className='group relative'>
 										<Button variant='outline' className='flex items-center space-x-2'>
 											<User className='h-5 w-5' />
-											<span>{user.name.split(' ')[0]}</span>
+											<span>{user.name?.split(' ')[0]}</span>
 										</Button>
 										<div className='absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:inline-block'>
 											<Link href='/profile' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
