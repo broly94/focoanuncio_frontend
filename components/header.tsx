@@ -1,16 +1,16 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, User, Bell, Map } from 'lucide-react';
+import { Menu, X, User, Bell, Map, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { useRouter } from 'next/navigation';
+import UserAvatar from '@/app/login/components/UserAvatar';
+import Image from 'next/image';
 
 export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const user = useAuthStore((state) => state.user);
-	console.log(user);
 	const logout = useAuthStore((state) => state.logout);
 	const route = useRouter();
 
@@ -25,9 +25,9 @@ export default function Header() {
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='flex justify-between h-16'>
 					<div className='flex'>
-						<div className='flex-shrink-0 flex items-center'>
-							<Link href='/' className='text-2xl font-bold text-emerald-600'>
-								Foco Anuncio
+						<div className='flex-shrink-0 flex justify-center items-center flex-row'>
+							<Link href='/' className='text-2xl font-bold text-violet-600'>
+								<Image src={`/images/icon-foco.svg`} alt='foco' width={50} height={50} />
 							</Link>
 						</div>
 					</div>
@@ -36,26 +36,26 @@ export default function Header() {
 					<nav className='hidden md:ml-6 md:flex md:space-x-8'>
 						<Link
 							href='/'
-							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300'
+							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-base font-medium text-slate-600 hover:text-violet-700 hover:border-violet-300'
 						>
 							Inicio
 						</Link>
 						<Link
 							href='/search'
-							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300'
+							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-base font-medium text-slate-600 hover:text-violet-700 hover:border-violet-300'
 						>
 							Buscar
 						</Link>
 						<Link
 							href='/maps'
-							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300'
+							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-base font-medium text-slate-600 hover:text-violet-700 hover:border-violet-300'
 						>
 							<Map className='h-4 w-4 mr-1' />
 							Mapas
 						</Link>
 						<Link
 							href='/about'
-							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300'
+							className='inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-base font-medium text-slate-600 hover:text-violet-700 hover:border-violet-300'
 						>
 							Acerca de
 						</Link>
@@ -67,22 +67,27 @@ export default function Header() {
 								<Button variant='ghost' size='icon' className='mr-2'>
 									<Bell className='h-5 w-5' />
 								</Button>
-								<div className='relative ml-3'>
+								<div className='relative ml-3 border-1 border-gray-600 rounded-md shadow-md'>
 									<div className='group relative'>
-										<Button variant='outline' className='flex items-center space-x-2'>
-											<User className='h-5 w-5' />
-											<span>{user.name?.split(' ')[0]}</span>
+										<Button variant='outline' className='flex items-center space-x-2 py-5'>
+											<UserAvatar />
+											<span className='text-sm'>{user.name}</span>
 										</Button>
-										<div className='absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:inline-block'>
-											<Link href='/profile' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
-												Mi Perfil
-											</Link>
-											<Link href='/profile/reservations' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
-												Mis Reservas
-											</Link>
-											<button onClick={handleLogout} className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
-												Cerrar Sesión
-											</button>
+										<div className='absolute right-0 mt-0 bg-transparent hidden z-10 group-hover:block'>
+											<div className=' mt-2 w-48 bg-slate-200 rounded-md shadow-lg  py-3  hidden group-hover:inline-block border-1 border-gray-900'>
+												<Link href='/profile' className='block px-4 py-2 text-sm text-gray-700 hover:text-violet-600'>
+													Mi Perfil
+												</Link>
+												<Link href='/profile/reservations' className='block px-4 py-2 text-sm text-gray-700 hover:text-violet-600'>
+													Mis Reservas
+												</Link>
+												<button
+													onClick={handleLogout}
+													className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:text-violet-600'
+												>
+													Cerrar Sesión
+												</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -159,7 +164,7 @@ export default function Header() {
 							<>
 								<div className='flex items-center px-4'>
 									<div className='flex-shrink-0'>
-										<User className='h-10 w-10 rounded-full bg-gray-100 p-2' />
+										<UserAvatar />
 									</div>
 									<div className='ml-3'>
 										<div className='text-base font-medium text-gray-800'>{user.name}</div>

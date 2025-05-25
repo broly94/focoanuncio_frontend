@@ -1,12 +1,13 @@
 import type React from 'react';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Lato, Mona_Sans, Roboto_Slab } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
 
 const inter = Inter({ subsets: ['latin'] });
+const lato = Mona_Sans({ weight: ['400', '700'], subsets: ['latin'] });
 
 export const metadata: Metadata = {
 	title: 'Estrategias de Marketing',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang='es'>
-			<body className={inter.className}>
+			<body className={lato.className}>
 				<Providers>
 					<div className='flex flex-col min-h-screen'>
 						<Header />
