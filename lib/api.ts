@@ -5,7 +5,7 @@ import { showToast } from 'nextjs-toast-notify';
 import { Split } from 'lucide-react';
 
 // This is a mock API client that would be replaced with actual API calls in a real app
-export const api = {
+export const api: any = {
 	// Strategies
 	getStrategies: async (params?: Record<string, string>) => {
 		// Simulate API call
@@ -231,8 +231,10 @@ export const api = {
 
 	// User
 	login: async (email: string, password: string) => {
+		console.log(email, password);
 		try {
 			const resposne = await axios.post('http://localhost:3002/api/auth/login', { email, password });
+			console.log(resposne.data);
 			return resposne.data;
 		} catch (error: any) {
 			console.log(error);

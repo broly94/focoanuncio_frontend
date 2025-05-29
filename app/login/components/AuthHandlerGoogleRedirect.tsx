@@ -9,8 +9,6 @@ export default function AuthHandlerGoogleRedirect() {
 	const setUser = useAuthStore((state) => state.setUser);
 	const setToken = useAuthStore((state) => state.setToken);
 
-	console.log(searchParams);
-
 	useEffect(() => {
 		const token = searchParams.get('token');
 		const user_email = searchParams.get('user_email');
@@ -22,7 +20,7 @@ export default function AuthHandlerGoogleRedirect() {
 			setUser({ email: user_email, name: user_name, avatar: avatar });
 			router.replace('/');
 		}
-	}, [router, searchParams, setUser, setToken]);
+	}, [searchParams, setUser, setToken]);
 
 	return null;
 }

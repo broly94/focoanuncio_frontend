@@ -5,6 +5,7 @@ import './globals.css';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
+import ValidateUserLogin from '@/components/validate-user-login';
 
 const inter = Inter({ subsets: ['latin'] });
 const lato = Mona_Sans({ weight: ['400', '700'], subsets: ['latin'] });
@@ -19,6 +20,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang='es'>
 			<body className={lato.className}>
+				{/* Revisar el validate */}
+				{/* <ValidateUserLogin /> */}
 				<Providers>
 					<div className='flex flex-col min-h-screen'>
 						<Header />

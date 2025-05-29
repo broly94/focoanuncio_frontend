@@ -9,8 +9,8 @@ export default function UserAvatar() {
 			className='rounded-full'
 			src={user?.avatar || '/images/user/user_default_avatar.svg'}
 			alt='User Avatar'
-			width={30}
-			height={30}
+			width={25}
+			height={25}
 			//className='rounded-full border-2 border-gray-300 shadow-sm'
 			priority
 		/>

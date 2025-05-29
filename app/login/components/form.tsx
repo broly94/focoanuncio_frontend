@@ -49,6 +49,7 @@ export default function LoginForm() {
 
 			router.push('/');
 		} catch (error: any) {
+			console.log('Entro al catch');
 			showToast.error(`${error.message}`, {
 				duration: 4000,
 				progress: false,
