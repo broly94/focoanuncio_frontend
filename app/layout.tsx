@@ -21,8 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang='es'>
 			<body className={lato.className}>
 				{/* Revisar el validate */}
-				{/* <ValidateUserLogin /> */}
 				<Providers>
+					<ValidateUserLogin />
 					<div className='flex flex-col min-h-screen'>
 						<Header />
 						<div className='flex-grow'>{children}</div>

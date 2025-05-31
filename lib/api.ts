@@ -228,48 +228,4 @@ export const api: any = {
 			},
 		}));
 	},
-
-	// User
-	login: async (email: string, password: string) => {
-		console.log(email, password);
-		try {
-			const resposne = await axios.post('http://localhost:3002/api/auth/login', { email, password });
-			console.log(resposne.data);
-			return resposne.data;
-		} catch (error: any) {
-			console.log(error);
-			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al iniciar sesión';
-			throw new Error(errorMessage);
-		}
-	},
-
-	register: async (name: string, lastName: string, phone: string, email: string, password: string) => {
-		try {
-			return await axios.post('http://localhost:3002/api/auth/register', { name, lastName, phone, email, password });
-		} catch (error: any) {
-			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al registrar';
-			throw new Error(errorMessage);
-		}
-	},
-
-	getCurrentUser: async () => {
-		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 500));
-
-		// Check if user is logged in (in a real app, this would verify the JWT token)
-		const isLoggedIn = Math.random() > 0.5;
-
-		if (!isLoggedIn) {
-			return null;
-		}
-
-		return {
-			id: 1,
-			name: 'Usuario Demo',
-			email: 'usuario@ejemplo.com',
-			strategies: [],
-			following: [],
-			reviews: [],
-		};
-	},
 };

@@ -1,18 +1,21 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
-import { Split } from 'lucide-react';
+//import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/store/auth-store';
+import { ApiUser } from '@/lib/api/users.api';
 
 // Clave global para la consulta del usuario actual
 export const CURRENT_USER_QUERY_KEY = ['currentUser'];
 
 // Hook para obtener el usuario actual
 export function useCurrentUser() {
+	const token = useAuthStore((state) => state.token);
+
 	return useQuery({
 		queryKey: CURRENT_USER_QUERY_KEY,
-		queryFn: () => api.getCurrentUser(),
+		queryFn: () => ApiUser.getCurrentUser(token),
+		enabled: !!token,
 	});
 }
 
@@ -21,7 +24,7 @@ export function useLogin() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ email, password }: { email: string; password: string }) => api.login(email, password),
+		mutationFn: ({ email, password }: { email: string; password: string }) => ApiUser.login(email, password),
 		onSuccess: (data: any) => {
 			console.log(data);
 			const user = { name: data.name, email: data.email };
@@ -52,13 +55,8 @@ export function useRegister() {
 			phone: string;
 			email: string;
 			password: string;
-		}) => api.register(name, lastName, phone, email, password),
+		}) => ApiUser.register(name, lastName, phone, email, password),
 		onSuccess: (data) => {
-			console.log(data);
-			// En una aplicación real, almacenarías el token en localStorage o una cookie segura
-			//localStorage.setItem('token', data?.token);
-
-			// Invalidar y volver a obtener la consulta del usuario actual
 			queryClient.invalidateQueries({ queryKey: CURRENT_USER_QUERY_KEY });
 		},
 		onError: (error: any) => {
