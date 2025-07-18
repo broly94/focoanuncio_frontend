@@ -11,7 +11,7 @@ export default function Home() {
 	return (
 		<>
 			<AuthHandlerGoogleRedirect />
-			<main className='min-h-screen'>
+			<main className='min-h-screen w-full'>
 				{/* Hero Section with Search - Full Screen Height */}
 				<section className='relative bg-gradient-to-r from-violet-600 to-violet-500 min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-8'>
 					<div className='max-w-5xl mx-auto text-center'>

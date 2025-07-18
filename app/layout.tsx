@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<ValidateUserLogin />
 					<div className='flex flex-col min-h-screen'>
 						<Header />
-						<div className='flex-grow'>{children}</div>
+						<div className='flex min-h-full w-full justify-center'>{children}</div>
 						<Footer />
 					</div>
 				</Providers>
