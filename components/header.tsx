@@ -67,9 +67,9 @@ export default function Header() {
 								<Button variant='ghost' size='icon' className='mr-2'>
 									<Bell className='h-5 w-5' />
 								</Button>
-								<div className='relative ml-3 border-1 border-gray-600 rounded-md shadow-md'>
+								<div className='relative ml-3 border border-slate-400 rounded-md shadow-md'>
 									<div className='group relative'>
-										<Button variant='outline' className='flex items-center space-x-2 py-5'>
+										<Button variant='outline' className='flex items-center space-x-2 py-5  hover:bg-violet-100'>
 											<UserAvatar />
 											<span className='text-sm'>{user.name}</span>
 										</Button>

@@ -2,11 +2,14 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { MouseEvent, useState } from 'react';
+import ProfileForm from '@/app/profile/components/ProfileForm';
+import AdressForm from '@/app/profile/components/AdressForm';
+import ConfigForm from '@/app/profile/components/ConfigForm';
 
 enum TabItems {
 	PROFILE = 'Perfil',
 	ADDRESS = 'Dirección',
-	CONFIG = 'configuración',
+	CONFIG = 'Configuración',
 	LOGOUT = 'Cerrar Sesión',
 }
 
@@ -47,41 +50,21 @@ export default function Dashboard() {
 
 			{/* Contenido principal */}
 			<main className='flex-2 w-full p-6'>
-				<div className='max-w-4xl mx-auto bg-white shadow-md rounded-2xl p-6'>
-					{/* Sección de Perfil */}
-					<section className='mb-8'>
-						<h2 className='text-xl font-semibold mb-4 text-gray-700'>Información Personal</h2>
-						<div className='flex items-center space-x-4'>
-							<img src='https://i.pravatar.cc/100' alt='Foto de perfil' className='w-20 h-20 rounded-full' />
-							<div>
-								<p className='text-lg font-medium text-gray-800'>Leonel Carro</p>
-								<p className='text-gray-600'>leonel@example.com</p>
-							</div>
-						</div>
-					</section>
-
-					{/* Sección de Dirección */}
-					<section>
-						<h2 className='text-xl font-semibold mb-4 text-gray-700'>Dirección</h2>
-						<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-							<div>
-								<label className='block text-sm font-medium text-gray-700'>Calle</label>
-								<p className='mt-1 text-gray-800'>Av. Siempre Viva 742</p>
-							</div>
-							<div>
-								<label className='block text-sm font-medium text-gray-700'>Ciudad</label>
-								<p className='mt-1 text-gray-800'>Springfield</p>
-							</div>
-							<div>
-								<label className='block text-sm font-medium text-gray-700'>Provincia</label>
-								<p className='mt-1 text-gray-800'>Buenos Aires</p>
-							</div>
-							<div>
-								<label className='block text-sm font-medium text-gray-700'>País</label>
-								<p className='mt-1 text-gray-800'>Argentina</p>
-							</div>
-						</div>
-					</section>
+				<div className='md:hidden mb-6 mx-auto bg-slate-200 shadow-lg rounded-2xl p-6 border border-slate-300'>
+					<div className='bg-white border border-slate-300 rounded-md shadow-sm mt-6 p-5'>
+						<ProfileForm />
+					</div>
+					<div className='bg-white border border-slate-300 rounded-md shadow-sm mt-6 p-5'>
+						<AdressForm />
+					</div>
+					<div className='bg-white border border-slate-300 rounded-md shadow-sm mt-6 p-5'>
+						<ConfigForm />
+					</div>
+				</div>
+				<div className='max-w-4xl hidden md:flex justify-center mx-auto bg-slate-200 shadow-lg rounded-2xl p-6 border border-slate-300'>
+					{activeTab === TabItems.PROFILE && <ProfileForm />}
+					{activeTab === TabItems.ADDRESS && <AdressForm />}
+					{activeTab == TabItems.CONFIG && <ConfigForm />}
 				</div>
 			</main>
 		</div>
