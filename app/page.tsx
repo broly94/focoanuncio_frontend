@@ -13,10 +13,10 @@ export default function Home() {
 			<AuthHandlerGoogleRedirect />
 			<main className='min-h-screen w-full'>
 				{/* Hero Section with Search - Full Screen Height */}
-				<section className='relative bg-gradient-to-r from-violet-600 to-violet-500 min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-8'>
+				<section className='relative bg-gradient-to-r bg-slate-200 min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-8'>
 					<div className='max-w-5xl mx-auto text-center'>
-						<h1 className='text-4xl font-extrabold text-white sm:text-5xl md:text-6xl'>Encuentra la mejor estrategia de marketing</h1>
-						<p className='mt-3 max-w-md mx-auto text-xl text-white sm:text-2xl md:max-w-3xl'>
+						<h1 className='text-4xl font-extrabold text-violet-800 sm:text-5xl md:text-6xl'>Encuentra la mejor estrategia de marketing</h1>
+						<p className='mt-3 max-w-md mx-auto text-xl text-violet-400 sm:text-2xl md:max-w-3xl'>
 							Conecta con negocios locales y descubre estrategias efectivas para tu empresa
 						</p>
 						<div className='mt-10'>

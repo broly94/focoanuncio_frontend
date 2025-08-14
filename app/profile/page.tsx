@@ -1,6 +1,5 @@
 'use client';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { MouseEvent, useState } from 'react';
 import ProfileForm from '@/app/profile/components/ProfileForm';
 import AdressForm from '@/app/profile/components/AdressForm';
@@ -31,7 +30,7 @@ export default function Dashboard() {
 	return (
 		<div className='min-h-screen flex w-full justify-center container pt-10'>
 			{/* Sidebar */}
-			<aside className='w-72 hidden md:flex flex-1 flex-col shadow-md p-6'>
+			<aside className='w-72 hidden md:flex flex-1 flex-col p-6'>
 				<h2 className='text-2xl font-bold text-violet-600 mb-8'>Mi Cuenta</h2>
 				<nav className='flex flex-col w-full space-y-4 text-gray-700'>
 					{ItemsLinks.map((item, index) => (

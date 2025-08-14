@@ -14,10 +14,11 @@ export default function AuthHandlerGoogleRedirect() {
 		const user_email = searchParams.get('user_email');
 		const user_name = searchParams.get('user_name');
 		const avatar = searchParams.get('avatar');
-
-		if (token && user_email && user_name) {
+		const id = searchParams.get('id');
+		console.log(id);
+		if (token && user_email && user_name && id) {
 			setToken(token);
-			setUser({ email: user_email, name: user_name, avatar: avatar });
+			setUser({ email: user_email, name: user_name, avatar: avatar, id: id });
 			router.replace('/');
 		}
 	}, [searchParams, setUser, setToken]);

@@ -32,4 +32,15 @@ export class ApiUser {
 			throw new Error(errorMessage);
 		}
 	}
+
+	//Terminar
+	static async getAdressByUserId(userId: number) {
+		try {
+			const response = await axios.get;
+		} catch (error: any) {
+			console.log(error);
+			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al obtener la dirección del usuario';
+			throw new Error(errorMessage);
+		}
+	}
 }
