@@ -1,15 +1,25 @@
 'use client';
 
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 import { useProvinces, useLocalities } from '@/hooks/use-location';
 import { useLocationStore } from '@/app/profile/store/location-store';
-import { Button } from '@/components/ui/button';
+import useDebounced from '@/hooks/use-debounced';
+import MunicipalityAutomcomplete from './MunicipalityAutomcomplete';
 
 // -------------------
 // Schema con Zod
@@ -25,11 +35,6 @@ const adressSchema = z.object({
 type AdressFormData = z.infer<typeof adressSchema>;
 
 export default function AdressForm() {
-	const { provinceSelected, setProvinceSelected } = useLocationStore();
-
-	const { data: provinces, isLoading } = useProvinces();
-	const { data: municipalities } = useLocalities('06', 'Quilmes');
-
 	const {
 		register,
 		handleSubmit,
@@ -40,13 +45,28 @@ export default function AdressForm() {
 		resolver: zodResolver(adressSchema),
 		defaultValues: {
 			country: 'Argentina',
+			city: '', // importante tenerlo inicializado
+			province: '', // importante tenerlo inicializado
 		},
 	});
 
-	// Sincronizar el store con el form cuando se seleccione provincia
+	const { provinceSelected, setProvinceSelected } = useLocationStore();
+
+	const { data: provinces, isLoading } = useProvinces();
+
+	// ciudad escrita (con debounce) -> se usa para pedir al backend
+	const debouncedCity = useDebounced(watch('city') ?? '', 500);
+
+	// cargar localidades desde backend en base a provincia + city (ya tenés datos en tiempo real acá)
+	const { data } = useLocalities(provinceSelected, debouncedCity);
+
+	const municipalities = Array.isArray(data) ? data : [];
+
+	// provincia seleccionada
 	const handleProvinceChange = (value: string) => {
-		setValue('province', value);
+		setValue('province', value, { shouldDirty: true });
 		setProvinceSelected(value);
+		setValue('city', '', { shouldDirty: true, shouldValidate: false }); // reset ciudad
 	};
 
 	const onSubmit = (data: AdressFormData) => {
@@ -54,11 +74,14 @@ export default function AdressForm() {
 		// acá llamás al backend con axios o Tanstack mutation
 	};
 
+	// debug: ver en tiempo real lo que trae el hook
+	console.log('Municipalities:', municipalities);
+
 	return (
-		<section className='flex flex-col justify-between w-full'>
+		<section className='grid grid-cols-1 justify-between w-full'>
 			<h2 className='text-center text-xl font-semibold mb-4 text-gray-700'>Dirección</h2>
 
-			<form onSubmit={handleSubmit(onSubmit)} className='text-start grid grid-cols-1 md:grid-cols-2 gap-4 gap-x-10'>
+			<form onSubmit={handleSubmit(onSubmit)} className='text-start grid grid-cols-1 sm:grid-cols-2 grid-rows-4 gap-4'>
 				{/* Provincia */}
 				<div>
 					<label className='block text-md text-gray-700 font-bold pl-2'>Provincia</label>
@@ -69,7 +92,7 @@ export default function AdressForm() {
 						<SelectContent>
 							{isLoading && <p>Cargando...</p>}
 							{provinces?.map((prov: any) => (
-								<SelectItem key={prov.province_id} value={prov.name}>
+								<SelectItem key={prov.province_id} value={String(prov.province_id)}>
 									{prov.name}
 								</SelectItem>
 							))}
@@ -78,24 +101,29 @@ export default function AdressForm() {
 					{errors.province && <p className='text-sm text-red-500'>{errors.province.message}</p>}
 				</div>
 
-				{/* Ciudad */}
+				{/* Ciudad con autocomplete */}
 				<div>
 					<label className='block text-md text-gray-700 font-bold pl-2'>Ciudad</label>
-					<Input placeholder='Berazategui' disabled={!watch('province')} {...register('city')} />
+					<MunicipalityAutomcomplete
+						municipalities={municipalities} // array de resultados
+						value={watch('city') || ''} // valor actual del input
+						onChange={(val) => setValue('city', val)} // actualizar el form
+						disabled={!watch('province')} // deshabilitar si no hay provincia
+					/>
 					{errors.city && <p className='text-sm text-red-500'>{errors.city.message}</p>}
 				</div>
 
 				{/* Calle */}
 				<div className='flex flex-col'>
 					<label className='block text-md text-gray-700 font-bold pl-2'>Calle</label>
-					<Input placeholder='Av General Jose de San Martin' {...register('address')} />
+					<Input placeholder='Av General Jose de San Martin' disabled={!watch('city')} {...register('address')} />
 					{errors.address && <p className='text-sm text-red-500'>{errors.address.message}</p>}
 				</div>
 
 				{/* Código Postal */}
 				<div>
 					<label className='block text-md text-gray-700 font-bold pl-2'>Código Postal</label>
-					<Input placeholder='1884' {...register('postalCode')} />
+					<Input placeholder='1884' {...register('postalCode')} disabled={!watch('city')} />
 					{errors.postalCode && <p className='text-sm text-red-500'>{errors.postalCode.message}</p>}
 				</div>
 
@@ -105,8 +133,10 @@ export default function AdressForm() {
 					<Input disabled {...register('country')} />
 				</div>
 
-				<div className='col-span-2 flex justify-end'>
-					<Button type='submit'>Guardar dirección</Button>
+				<div className='flex justify-end'>
+					<Button variant='default' type='submit' className='bg-white text-violet-600 hover:bg-violet-100 mr-4 shadow-md'>
+						Guardar o Actualizar
+					</Button>
 				</div>
 			</form>
 		</section>

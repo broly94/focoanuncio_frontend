@@ -86,7 +86,7 @@ export function useLocalities(provinceId: string, query: string) {
 			const response = await ApiLocation.getLocalities(provinceId, query);
 			return response;
 		},
-		enabled: query.length >= 2 && !!provinceId,
+		enabled: query?.length >= 2 && !!provinceId,
 		staleTime: 1000 * 60 * 60, // 1 hour
 	});
 }
