@@ -64,8 +64,3 @@ export function useRegister() {
 		},
 	});
 }
-
-// // Hook para cerrar sesión
-// export function useLogout() {
-// 	const logout = useAuthStore((state) => state.logout);
-// }

@@ -74,5 +74,19 @@ export function useProvinces() {
 			const response = await ApiLocation.getProvinces();
 			return response;
 		},
+		enabled: true,
+		staleTime: 1000 * 60 * 60, // 1 hour
+	});
+}
+
+export function useLocalities(provinceId: string, query: string) {
+	return useQuery({
+		queryKey: ['localities', provinceId, 'query', query],
+		queryFn: async () => {
+			const response = await ApiLocation.getLocalities(provinceId, query);
+			return response;
+		},
+		enabled: query.length >= 2 && !!provinceId,
+		staleTime: 1000 * 60 * 60, // 1 hour
 	});
 }
