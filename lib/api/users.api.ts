@@ -34,9 +34,14 @@ export class ApiUser {
 	}
 
 	//Terminar
-	static async getAdressByUserId(userId: number) {
+	static async getAdressUserById(userId: number, token: string | null) {
 		try {
-			const response = await api.get;
+			const response = await api.post(
+				'/adress-users',
+				{ userId },
+				{ headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+			);
+			return response.data;
 		} catch (error: any) {
 			console.log(error);
 			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al obtener la dirección del usuario';

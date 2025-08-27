@@ -4,8 +4,9 @@ import SearchBar from '@/components/search-bar';
 import AdvertBanner from '@/components/advert-banner';
 import { popularCategories } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, LocateFixed } from 'lucide-react';
 import AuthHandlerGoogleRedirect from '@/app/login/components/AuthHandlerGoogleRedirect';
+import CurrentLocation from '@/components/current-location';
 
 export default function Home() {
 	return (
@@ -21,6 +22,10 @@ export default function Home() {
 						</p>
 						<div className='mt-10'>
 							<SearchBar />
+						</div>
+						<div>
+							{/* Button current location */}
+							<CurrentLocation />
 						</div>
 						<div className='mt-10'>
 							<Button size='lg' variant='default' className='bg-white text-violet-600 hover:bg-violet-100 mr-4 shadow-md' asChild>

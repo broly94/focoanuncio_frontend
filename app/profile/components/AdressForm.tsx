@@ -45,8 +45,8 @@ export default function AdressForm() {
 		resolver: zodResolver(adressSchema),
 		defaultValues: {
 			country: 'Argentina',
-			city: '', // importante tenerlo inicializado
-			province: '', // importante tenerlo inicializado
+			city: '',
+			province: '',
 		},
 	});
 
@@ -55,18 +55,20 @@ export default function AdressForm() {
 	const { data: provinces, isLoading } = useProvinces();
 
 	// ciudad escrita (con debounce) -> se usa para pedir al backend
-	const debouncedCity = useDebounced(watch('city') ?? '', 500);
+	const debouncedMunicipality = useDebounced(watch('city') ?? '', 500);
 
 	// cargar localidades desde backend en base a provincia + city (ya tenés datos en tiempo real acá)
-	const { data } = useLocalities(provinceSelected, debouncedCity);
+	const { data } = useLocalities(provinceSelected, debouncedMunicipality);
 
 	const municipalities = Array.isArray(data) ? data : [];
 
 	// provincia seleccionada
 	const handleProvinceChange = (value: string) => {
 		setValue('province', value, { shouldDirty: true });
+		// Setea la provincia seleccionada en el store
 		setProvinceSelected(value);
-		setValue('city', '', { shouldDirty: true, shouldValidate: false }); // reset ciudad
+		// limpiar ciudad y calle cuando se cambia la provincia
+		setValue('city', '', { shouldDirty: true, shouldValidate: false });
 	};
 
 	const onSubmit = (data: AdressFormData) => {
