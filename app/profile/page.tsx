@@ -60,7 +60,7 @@ export default function Dashboard() {
 						<ConfigForm />
 					</div>
 				</div>
-				<div className='max-w-4xl hidden md:flex justify-center mx-auto bg-slate-200 shadow-lg rounded-2xl p-6 border border-slate-300'>
+				<div className='max-w-4xl hidden md:flex justify-center mx-auto bg-white shadow-md rounded-2xl p-6 border border-slate-500'>
 					{activeTab === TabItems.PROFILE && <ProfileForm />}
 					{activeTab === TabItems.ADDRESS && <AdressForm />}
 					{activeTab == TabItems.CONFIG && <ConfigForm />}

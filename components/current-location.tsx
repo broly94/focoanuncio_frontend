@@ -13,6 +13,18 @@ export default function CurrentLocation() {
 	const { data: user } = useCurrentUser();
 	const token = useAuthStore((state) => state.token);
 	const { data: userAdress } = useGetAdressUserById(user?.id, token);
+	
+	// Hay que corregir desde el backend state o en el frontend municipalty
+
+
+	// Hay que verificar primero si el usuario esta logueado, si lo está, hay que verificar si ya tiene una dirección guardada, si no esta logueado, mostrar el boton de usar mi ubicación actual
+	// Si el usuario ya tiene una dirección guardada, mostrar la dirección guardada
+	if (user && userAdress)
+		return (
+			<p className='text-sm text-violet-700 pt-10'>
+				Tu ubicación actual es: {userAdress.state}, {userAdress.province} 📍
+			</p>
+		);
 
 	useEffect(() => {
 		const lat = localStorage.getItem('user_lat');
@@ -45,8 +57,8 @@ export default function CurrentLocation() {
 	}
 
 	return (
-		<Button size='lg' variant='default' className='border-white text-white bg-violet-700 mt-6 hover:bg-violet-500' onClick={handleLocation}>
-			<LocateFixed className='h-5 w-5 text-white mr-2 flex-shrink-0' />
+		<Button size='lg' variant='secondary' className='mt-6' onClick={handleLocation}>
+			<LocateFixed className='h-5 w-5 text-slate-500 mr-2' />
 			Usar mi ubicación actual
 		</Button>
 	);

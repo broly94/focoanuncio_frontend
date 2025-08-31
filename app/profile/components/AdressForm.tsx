@@ -7,26 +7,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 import { useProvinces, useLocalities } from '@/hooks/use-location';
 import { useLocationStore } from '@/app/profile/store/location-store';
 import useDebounced from '@/hooks/use-debounced';
-import MunicipalityAutomcomplete from './MunicipalityAutomcomplete';
+import SearchState from '@/app/profile/components/SearchState';
 
 // -------------------
 // Schema con Zod
 // -------------------
 const adressSchema = z.object({
 	province: z.string().min(1, 'Selecciona una provincia'),
-	city: z.string().min(1, 'La ciudad es requerida'),
+	state: z.string().min(1, 'La ciudad es requerida'),
 	address: z.string().min(1, 'La calle es requerida'),
 	postalCode: z.string().min(4, 'Código postal inválido'),
 	country: z.string().transform(() => 'Argentina'),
@@ -45,7 +39,7 @@ export default function AdressForm() {
 		resolver: zodResolver(adressSchema),
 		defaultValues: {
 			country: 'Argentina',
-			city: '',
+			state: '',
 			province: '',
 		},
 	});
@@ -55,12 +49,12 @@ export default function AdressForm() {
 	const { data: provinces, isLoading } = useProvinces();
 
 	// ciudad escrita (con debounce) -> se usa para pedir al backend
-	const debouncedMunicipality = useDebounced(watch('city') ?? '', 500);
+	const debouncedState = useDebounced(watch('state') ?? '', 500);
 
 	// cargar localidades desde backend en base a provincia + city (ya tenés datos en tiempo real acá)
-	const { data } = useLocalities(provinceSelected, debouncedMunicipality);
+	const { data } = useLocalities(provinceSelected, debouncedState);
 
-	const municipalities = Array.isArray(data) ? data : [];
+	const states = Array.isArray(data) ? data : [];
 
 	// provincia seleccionada
 	const handleProvinceChange = (value: string) => {
@@ -68,7 +62,7 @@ export default function AdressForm() {
 		// Setea la provincia seleccionada en el store
 		setProvinceSelected(value);
 		// limpiar ciudad y calle cuando se cambia la provincia
-		setValue('city', '', { shouldDirty: true, shouldValidate: false });
+		setValue('state', '', { shouldDirty: true, shouldValidate: false });
 	};
 
 	const onSubmit = (data: AdressFormData) => {
@@ -77,7 +71,7 @@ export default function AdressForm() {
 	};
 
 	// debug: ver en tiempo real lo que trae el hook
-	console.log('Municipalities:', municipalities);
+	console.log('states:', states);
 
 	return (
 		<section className='grid grid-cols-1 justify-between w-full'>
@@ -106,26 +100,26 @@ export default function AdressForm() {
 				{/* Ciudad con autocomplete */}
 				<div>
 					<label className='block text-md text-gray-700 font-bold pl-2'>Ciudad</label>
-					<MunicipalityAutomcomplete
-						municipalities={municipalities} // array de resultados
-						value={watch('city') || ''} // valor actual del input
-						onChange={(val) => setValue('city', val)} // actualizar el form
+					<SearchState
+						states={states} // array de resultados
+						value={watch('state') || ''} // valor actual del input
+						onChange={(val) => setValue('state', val)} // actualizar el form
 						disabled={!watch('province')} // deshabilitar si no hay provincia
 					/>
-					{errors.city && <p className='text-sm text-red-500'>{errors.city.message}</p>}
+					{errors.state && <p className='text-sm text-red-500'>{errors.state.message}</p>}
 				</div>
 
 				{/* Calle */}
 				<div className='flex flex-col'>
 					<label className='block text-md text-gray-700 font-bold pl-2'>Calle</label>
-					<Input placeholder='Av General Jose de San Martin' disabled={!watch('city')} {...register('address')} />
+					<Input placeholder='Av General Jose de San Martin' disabled={!watch('state')} {...register('address')} />
 					{errors.address && <p className='text-sm text-red-500'>{errors.address.message}</p>}
 				</div>
 
 				{/* Código Postal */}
 				<div>
 					<label className='block text-md text-gray-700 font-bold pl-2'>Código Postal</label>
-					<Input placeholder='1884' {...register('postalCode')} disabled={!watch('city')} />
+					<Input placeholder='1884' {...register('postalCode')} disabled={!watch('state')} />
 					{errors.postalCode && <p className='text-sm text-red-500'>{errors.postalCode.message}</p>}
 				</div>
 
@@ -136,7 +130,7 @@ export default function AdressForm() {
 				</div>
 
 				<div className='flex justify-end'>
-					<Button variant='default' type='submit' className='bg-white text-violet-600 hover:bg-violet-100 mr-4 shadow-md'>
+					<Button variant='success' type='submit'>
 						Guardar o Actualizar
 					</Button>
 				</div>

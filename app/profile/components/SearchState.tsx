@@ -5,13 +5,13 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
-export default function MunicipalityAutomcomplete({
-	municipalities,
+export default function SearchState({
+	states,
 	value,
 	onChange,
 	disabled,
 }: {
-	municipalities: any[];
+	states: any[];
 	value: string;
 	onChange: (val: string) => void;
 	disabled?: boolean;
@@ -24,7 +24,12 @@ export default function MunicipalityAutomcomplete({
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
-				<Button variant='outline' role='combobox' disabled={disabled} className='w-full justify-between'>
+				<Button
+					variant='default'
+					role='combobox'
+					disabled={disabled}
+					className='w-full justify-between text-black border border-violet-300 hover:bg-violet-100 focus:border-violet-500 bg-violet-100'
+				>
 					{value || 'Escribe una ciudad'}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
@@ -39,7 +44,7 @@ export default function MunicipalityAutomcomplete({
 					/>
 					<CommandEmpty>No se encontraron resultados.</CommandEmpty>
 					<CommandGroup>
-						{municipalities.map((m) => {
+						{states.map((m) => {
 							const name = getName(m);
 							const id = getId(m);
 							return (

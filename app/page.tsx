@@ -202,7 +202,7 @@ export default function Home() {
 										</li>
 									</ul>
 
-									<Button variant='outline' className='w-full' asChild>
+									<Button variant='secondary' className='w-full' asChild>
 										<Link href='/register?plan=free'>Comenzar gratis</Link>
 									</Button>
 								</div>
@@ -252,7 +252,7 @@ export default function Home() {
 										</li>
 									</ul>
 
-									<Button className='w-full' asChild>
+									<Button className='w-full' variant='success' asChild>
 										<Link href='/register?plan=premium'>Comenzar ahora</Link>
 									</Button>
 								</div>
@@ -272,7 +272,7 @@ export default function Home() {
 							<Button size='lg' variant='default' className='bg-white text-emerald-600 hover:bg-gray-100' asChild>
 								<Link href='/register'>Crear cuenta gratis</Link>
 							</Button>
-							<Button size='lg' variant='outline' className='border-white text-white hover:bg-emerald-700' asChild>
+							<Button size='lg' variant='secondary' className='border-white text-white hover:bg-emerald-700' asChild>
 								<Link href='/search'>Explorar estrategias</Link>
 							</Button>
 						</div>
