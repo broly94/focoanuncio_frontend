@@ -4,8 +4,8 @@ import { persist, devtools } from 'zustand/middleware';
 type LocationState = {
 	provinceSelected: string;
 	setProvinceSelected: (province: string) => void;
-	localitySelected: string;
-	setLocalitySelected: (locality: string) => void;
+	stateSelected: string;
+	setStateSelected: (locality: string) => void;
 	address: string;
 	setAddress: (address: string) => void;
 	postalCode: string;
@@ -18,7 +18,7 @@ export const useLocationStore = create<LocationState>()(
 			provinceSelected: '',
 			setProvinceSelected: (province) => set({ provinceSelected: province }),
 			localitySelected: '',
-			setLocalitySelected: (locality) => set({ localitySelected: locality }),
+			setStateSelected: (state) => set({ stateSelected: state }),
 			address: '',
 			setAddress: (address) => set({ address }),
 			postalCode: '',

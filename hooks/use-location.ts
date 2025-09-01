@@ -1,7 +1,8 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { ApiLocation } from '@/lib/api/locations.api';
+import axios from 'axios';
 
 interface LocationSuggestion {
 	province: string;
@@ -88,5 +89,14 @@ export function useLocalities(provinceId: string, query: string) {
 		},
 		enabled: query?.length >= 2 && !!provinceId,
 		staleTime: 1000 * 60 * 60, // 1 hour
+	});
+}
+
+//'https://apis.datos.gob.ar/georef/api/municipios?nombre=la%20plata&provincia=buenos%20aires&campos=id,nombre,provincia,centroide&max=1'
+
+export function useAdressGeoRef() {
+	return useMutation({
+		mutationKey: ['get state georef'],
+		mutationFn: async ({ location }: { location: string }) => await ApiLocation.getAdressGeoRef(location),
 	});
 }

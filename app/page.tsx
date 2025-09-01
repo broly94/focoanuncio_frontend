@@ -5,12 +5,14 @@ import AdvertBanner from '@/components/advert-banner';
 import { popularCategories } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, LocateFixed } from 'lucide-react';
-import AuthHandlerGoogleRedirect from '@/app/login/components/AuthHandlerGoogleRedirect';
+import AuthHandlerGoogleRedirect from '@/app/login/components/auth-handler-google-redirect';
 import CurrentLocation from '@/components/current-location';
 
 export default function Home() {
 	return (
 		<>
+			{/* Verifica en el home page si la url contiene parametros de logueo con google o no */}
+			{/* Esto se hace para verificar que si esta logueado con google para poder guardar los datos en local, asi tambien como el token de inicio de sesión */}
 			<AuthHandlerGoogleRedirect />
 			<main className='min-h-screen w-full'>
 				{/* Hero Section with Search - Full Screen Height */}
@@ -24,7 +26,7 @@ export default function Home() {
 							<SearchBar />
 						</div>
 						<div>
-							{/* Button current location */}
+							{/* Boton para usar la locación actual del usuario, siempre y cuando no este logueado y tenga una direccion registrada */}
 							<CurrentLocation />
 						</div>
 						<div className='mt-10'>

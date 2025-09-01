@@ -7,24 +7,25 @@ import { useGetAdressUserById } from '@/hooks/use-user';
 import { useAuthStore } from '@/lib/store/auth-store';
 
 export default function CurrentLocation() {
+	// Estado para verificar si ya se obtuvo la ubicación
 	const [hasLocation, setHasLocation] = useState(false);
+	// Estado para verificar si el usuario ha declinado compartir su ubicación
 	const [declined, setDeclined] = useState(false);
 
 	const { data: user } = useCurrentUser();
 	const token = useAuthStore((state) => state.token);
-	const { data: userAdress } = useGetAdressUserById(user?.id, token);
-	
-	// Hay que corregir desde el backend state o en el frontend municipalty
-
+	const { data: adressUser } = useGetAdressUserById(user?.id, token);
 
 	// Hay que verificar primero si el usuario esta logueado, si lo está, hay que verificar si ya tiene una dirección guardada, si no esta logueado, mostrar el boton de usar mi ubicación actual
 	// Si el usuario ya tiene una dirección guardada, mostrar la dirección guardada
-	if (user && userAdress)
+
+	if (user && adressUser && adressUser.length > 0) {
 		return (
-			<p className='text-sm text-violet-700 pt-10'>
-				Tu ubicación actual es: {userAdress.state}, {userAdress.province} 📍
+			<p className=''>
+				Ubicación actual {adressUser.country} {adressUser.state}
 			</p>
 		);
+	}
 
 	useEffect(() => {
 		const lat = localStorage.getItem('user_lat');

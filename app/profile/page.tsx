@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { MouseEvent, useState } from 'react';
+import { memo, MouseEvent, useState } from 'react';
 import ProfileForm from '@/app/profile/components/ProfileForm';
 import AdressForm from '@/app/profile/components/AdressForm';
 import ConfigForm from '@/app/profile/components/ConfigForm';
@@ -19,7 +19,7 @@ const ItemsLinks = [
 	{ title: TabItems.LOGOUT, href: '/logout' },
 ];
 
-export default function Dashboard() {
+const Dashboard = memo(() => {
 	const [activeTab, setActiveTab] = useState<string>('Perfil');
 
 	const handleClick = (e: MouseEvent<HTMLAnchorElement>, title: string) => {
@@ -68,4 +68,6 @@ export default function Dashboard() {
 			</main>
 		</div>
 	);
-}
+});
+
+export default Dashboard;

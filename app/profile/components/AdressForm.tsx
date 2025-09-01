@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { useProvinces, useLocalities } from '@/hooks/use-location';
+import { useProvinces, useLocalities, useAdressGeoRef } from '@/hooks/use-location';
 import { useLocationStore } from '@/app/profile/store/location-store';
 import useDebounced from '@/hooks/use-debounced';
 import SearchState from '@/app/profile/components/SearchState';
@@ -28,7 +28,7 @@ const adressSchema = z.object({
 
 type AdressFormData = z.infer<typeof adressSchema>;
 
-export default function AdressForm() {
+const AdressForm = memo(() => {
 	const {
 		register,
 		handleSubmit,
@@ -44,16 +44,15 @@ export default function AdressForm() {
 		},
 	});
 
-	const { provinceSelected, setProvinceSelected } = useLocationStore();
+	const { provinceSelected, setProvinceSelected, stateSelected, setStateSelected } = useLocationStore();
 
 	const { data: provinces, isLoading } = useProvinces();
 
-	// ciudad escrita (con debounce) -> se usa para pedir al backend
+	// municipio escrito (con debounce) -> se usa para pedir al backend
 	const debouncedState = useDebounced(watch('state') ?? '', 500);
 
 	// cargar localidades desde backend en base a provincia + city (ya tenés datos en tiempo real acá)
 	const { data } = useLocalities(provinceSelected, debouncedState);
-
 	const states = Array.isArray(data) ? data : [];
 
 	// provincia seleccionada
@@ -65,13 +64,19 @@ export default function AdressForm() {
 		setValue('state', '', { shouldDirty: true, shouldValidate: false });
 	};
 
+	const { data: addressGeoref, mutate } = useAdressGeoRef();
+
 	const onSubmit = (data: AdressFormData) => {
-		console.log('Formulario enviado:', data);
-		// acá llamás al backend con axios o Tanstack mutation
+		const location = `${data.province}, ${data.state}, ${data.address}`;
+		mutate({ location });
 	};
 
+	console.log(addressGeoref);
+
 	// debug: ver en tiempo real lo que trae el hook
-	console.log('states:', states);
+	useEffect(() => {
+		console.log('states:', states);
+	}, [states]);
 
 	return (
 		<section className='grid grid-cols-1 justify-between w-full'>
@@ -137,4 +142,5 @@ export default function AdressForm() {
 			</form>
 		</section>
 	);
-}
+});
+export default AdressForm;
