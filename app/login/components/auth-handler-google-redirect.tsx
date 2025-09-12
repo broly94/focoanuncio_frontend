@@ -17,7 +17,7 @@ export default function AuthHandlerGoogleRedirect() {
 		const id = searchParams.get('id');
 		if (token && user_email && user_name && id) {
 			setToken(token);
-			setUser({ email: user_email, name: user_name, avatar: avatar, id: id });
+			setUser({ email: user_email, name: user_name, avatar: avatar, id: Number(id) });
 			router.replace('/');
 		}
 	}, [searchParams, setUser, setToken]);

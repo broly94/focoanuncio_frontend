@@ -67,23 +67,32 @@ export default function Header() {
 								<Button variant='ghost' size='icon' className='mr-2'>
 									<Bell className='h-5 w-5' />
 								</Button>
-								<div className='relative ml-3 border border-slate-400 rounded-md shadow-md'>
-									<div className='group relative'>
-										<Button variant='outline' className='flex items-center space-x-2 py-5  hover:bg-violet-100'>
+								<div className='relative'>
+									<div className='group relative '>
+										<Button
+											variant='default'
+											className='bg-white text-violet-600 hover:bg-violet-100 mr-4 shadow-md border border-slate-300 p-5'
+										>
 											<UserAvatar />
-											<span className='text-sm'>{user.name}</span>
+											<span className='text-base text-slate-800'>{user.name}</span>
 										</Button>
-										<div className='absolute right-0 mt-0 bg-transparent hidden z-10 group-hover:block'>
-											<div className=' mt-2 w-48 bg-slate-200 rounded-md shadow-lg  py-3  hidden group-hover:inline-block border-1 border-gray-900'>
-												<Link href='/profile' className='block px-4 py-2 text-sm text-gray-700 hover:text-violet-600'>
+										<div className='absolute right-0 mt-0 bg-transparent hidden z-10 group-hover:block border-1 border-gray-900'>
+											<div className=' mt-2 w-48 bg-slate-100 rounded-md shadow-lg  py-3  hidden group-hover:inline-block border border-gray-400'>
+												<Link
+													href='/profile'
+													className='block px-4 py-2 text-sm text-gray-700 hover:text-violet-600 hover:translate-x-1 transition-transform duration-200'
+												>
 													Mi Perfil
 												</Link>
-												<Link href='/profile/reservations' className='block px-4 py-2 text-sm text-gray-700 hover:text-violet-600'>
+												<Link
+													href='/profile/reservations'
+													className='block px-4 py-2 text-sm text-gray-700 hover:text-violet-600 hover:translate-x-1 transition-transform duration-200'
+												>
 													Mis Reservas
 												</Link>
 												<button
 													onClick={handleLogout}
-													className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:text-violet-600'
+													className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:text-violet-600 hover:translate-x-1 transition-transform duration-200'
 												>
 													Cerrar Sesión
 												</button>

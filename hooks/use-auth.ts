@@ -26,8 +26,7 @@ export function useLogin() {
 	return useMutation({
 		mutationFn: ({ email, password }: { email: string; password: string }) => ApiUser.login(email, password),
 		onSuccess: (data: any) => {
-			console.log(data);
-			const user = { name: data.name, email: data.email };
+			const user = { id: data.id, name: data.name, email: data.email };
 			useAuthStore.getState().setUser(user);
 			useAuthStore.getState().setToken(data.token);
 			queryClient.invalidateQueries({ queryKey: CURRENT_USER_QUERY_KEY });

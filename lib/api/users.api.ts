@@ -27,7 +27,6 @@ export class ApiUser {
 			const response = await api.get('/auth/me', { headers: { Authorization: `Bearer ${token}` } });
 			return response.data;
 		} catch (error: any) {
-			console.log(error);
 			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al obtener el usuario actual';
 			throw new Error(errorMessage);
 		}
@@ -37,7 +36,7 @@ export class ApiUser {
 	static async getAdressUserById(userId: number, token: string | null) {
 		try {
 			const response = await api.post(
-				'/adress-users',
+				'/address-users',
 				{ userId },
 				{ headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
 			);
@@ -45,6 +44,31 @@ export class ApiUser {
 		} catch (error: any) {
 			console.log(error);
 			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al obtener la dirección del usuario';
+			throw new Error(errorMessage);
+		}
+	}
+
+	static async createAddressUser(fullAddress: any, userId: number, token: string) {
+		try {
+			return await api.post(
+				'address-users/create',
+				{
+					province: fullAddress?.province,
+					state: fullAddress?.state,
+					adress: fullAddress?.address,
+					post_code: fullAddress?.postCode,
+					lat: fullAddress?.lat,
+					lon: fullAddress?.lon,
+					user: userId,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+		} catch (error: any) {
+			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Hubo un error al crear la dirección.';
 			throw new Error(errorMessage);
 		}
 	}

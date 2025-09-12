@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,9 +11,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import { useProvinces, useLocalities, useAdressGeoRef } from '@/hooks/use-location';
-import { useLocationStore } from '@/app/profile/store/location-store';
 import useDebounced from '@/hooks/use-debounced';
 import SearchState from '@/app/profile/components/SearchState';
+import { useAuthStore } from '@/lib/store/auth-store';
+import { useCreateAddressUser } from '@/hooks/use-user';
+
+import { OrbitProgress } from 'react-loading-indicators';
+import Loading from '@/app/profile/components/Loading';
 
 // -------------------
 // Schema con Zod
@@ -25,6 +29,16 @@ const adressSchema = z.object({
 	postalCode: z.string().min(4, 'Código postal inválido'),
 	country: z.string().transform(() => 'Argentina'),
 });
+
+export interface createAddressUserSchema {
+	province: string;
+	state: string;
+	address: string;
+	postCode: string;
+	lat: number;
+	lon: number;
+	user: number | undefined;
+}
 
 type AdressFormData = z.infer<typeof adressSchema>;
 
@@ -44,9 +58,11 @@ const AdressForm = memo(() => {
 		},
 	});
 
-	const { provinceSelected, setProvinceSelected, stateSelected, setStateSelected } = useLocationStore();
+	const [provinceSelected, setProvinceSelected] = useState<string>('');
 
 	const { data: provinces, isLoading } = useProvinces();
+
+	const { token, user } = useAuthStore((state) => state);
 
 	// municipio escrito (con debounce) -> se usa para pedir al backend
 	const debouncedState = useDebounced(watch('state') ?? '', 500);
@@ -64,19 +80,52 @@ const AdressForm = memo(() => {
 		setValue('state', '', { shouldDirty: true, shouldValidate: false });
 	};
 
-	const { data: addressGeoref, mutate } = useAdressGeoRef();
+	const addressGeoref = useAdressGeoRef();
+
+	const createUser = useCreateAddressUser();
+
+	// Creamos un objeto con todos los datos para enviar al backend
+	// Si no hay resultados, devolvemos null
+	const createFullAddress = (
+		province: string,
+		state: string,
+		address: string,
+		postCode: string,
+		result: any[] = []
+	): createAddressUserSchema | null => {
+		if (result.length > 0) {
+			const { lat, lng } = result[0].geometry.location;
+			return {
+				province,
+				state,
+				address,
+				postCode,
+				lat,
+				lon: lng,
+				user: user?.id,
+			};
+		}
+		return null;
+	};
 
 	const onSubmit = (data: AdressFormData) => {
 		const location = `${data.province}, ${data.state}, ${data.address}`;
-		mutate({ location });
+		// Primero obtenemos lat y lon desde georef
+		addressGeoref.mutateAsync(
+			{ location },
+			{
+				onSuccess: async (res) => {
+					// Si tenemos resultados, creamos la dirección completa y le enviamos los datos a createFullAddress para que arme el objeto de dirección
+					const fullAddress = createFullAddress(data.province, data.state, data.address, data.postalCode, res?.data.results);
+					// Se verifica que exista un usuario logueado y que exista el token de inicio de sesión.
+					if (user?.id !== undefined && token !== null) {
+						// Creamos la direccion del usuario
+						await createUser.mutateAsync({ fullAddress, userId: user.id, token });
+					}
+				},
+			}
+		);
 	};
-
-	console.log(addressGeoref);
-
-	// debug: ver en tiempo real lo que trae el hook
-	useEffect(() => {
-		console.log('states:', states);
-	}, [states]);
 
 	return (
 		<section className='grid grid-cols-1 justify-between w-full'>
@@ -135,8 +184,9 @@ const AdressForm = memo(() => {
 				</div>
 
 				<div className='flex justify-end'>
-					<Button variant='success' type='submit'>
-						Guardar o Actualizar
+					{/* Corregir defasaje del loader dentro del boton */}
+					<Button variant='success' type='submit' className='mt-4' disabled={addressGeoref.isPending || createUser.isPending}>
+						{addressGeoref.isPending || createUser.isPending ? <Loading /> : 'Guardar dirección'}
 					</Button>
 				</div>
 			</form>

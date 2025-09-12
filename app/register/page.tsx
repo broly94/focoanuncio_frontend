@@ -39,7 +39,6 @@ export default function RegisterPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [showPassword, setShowPassword] = useState(false);
-	const { toast } = useToast();
 	const register = useRegister();
 
 	const plan = searchParams.get('plan') || 'free';
