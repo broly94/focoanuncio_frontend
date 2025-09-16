@@ -7,25 +7,19 @@ import { useGetAdressUserById } from '@/hooks/use-user';
 import { useAuthStore } from '@/lib/store/auth-store';
 
 export default function CurrentLocation() {
-	// Estado para verificar si ya se obtuvo la ubicación
 	const [hasLocation, setHasLocation] = useState(false);
-	// Estado para verificar si el usuario ha declinado compartir su ubicación
 	const [declined, setDeclined] = useState(false);
 
-	const { data: user } = useCurrentUser();
 	const token = useAuthStore((state) => state.token);
-	const { data: adressUser } = useGetAdressUserById(user?.id, token);
+	const { data: user, isLoading: userLoading, error: userError, isError: isUserError } = useCurrentUser();
 
-	// Hay que verificar primero si el usuario esta logueado, si lo está, hay que verificar si ya tiene una dirección guardada, si no esta logueado, mostrar el boton de usar mi ubicación actual
-	// Si el usuario ya tiene una dirección guardada, mostrar la dirección guardada
-
-	if (user && adressUser && adressUser.length > 0) {
-		return (
-			<p className=''>
-				Ubicación actual {adressUser.country} {adressUser.state}
-			</p>
-		);
-	}
+	// Solo ejecutar esta query si hay usuario Y token válido
+	const {
+		data: adressUser,
+		isLoading: addressLoading,
+		error: addressError,
+		isError: isAddressError,
+	} = useGetAdressUserById(user?.id, token);
 
 	useEffect(() => {
 		const lat = localStorage.getItem('user_lat');
@@ -36,7 +30,40 @@ export default function CurrentLocation() {
 		if (declinedFlag) setDeclined(true);
 	}, []);
 
+	// Manejar errores de autenticación
+	useEffect(() => {
+		if (isUserError || isAddressError) {
+			console.error('Error de autenticación:', userError || addressError);
+			// Opcional: limpiar token inválido
+			// useAuthStore.getState().setToken(null);
+		}
+	}, [isUserError, isAddressError, userError, addressError]);
+
+	// Mostrar loading mientras se verifican los datos
+	if (userLoading) {
+		return <div className='text-sm text-gray-500'>Verificando usuario...</div>;
+	}
+
+	// Si hay usuario logueado Y tiene dirección guardada
+	if (user && adressUser && adressUser.country) {
+		return (
+			<p className='text-sm pt-5'>
+				Ubicación actual: {adressUser.country} {adressUser.state}
+			</p>
+		);
+	}
+
+	// Si hay usuario pero no tiene dirección, mostrar loading mientras se verifica
+	if (user && addressLoading) {
+		return <div className='text-sm text-gray-500'>Verificando dirección...</div>;
+	}
+
 	const handleLocation = () => {
+		if (!navigator.geolocation) {
+			alert('Tu navegador no soporta geolocalización');
+			return;
+		}
+
 		navigator.geolocation.getCurrentPosition(
 			(pos) => {
 				const { latitude, longitude } = pos.coords;
@@ -44,17 +71,45 @@ export default function CurrentLocation() {
 				localStorage.setItem('user_lon', longitude.toString());
 				localStorage.setItem('locationAccepted', 'true');
 				setHasLocation(true);
+				setDeclined(false);
 			},
 			(err) => {
-				console.error('User denied location:', err);
+				console.error('Error obteniendo ubicación:', err);
 				localStorage.setItem('locationDeclined', 'true');
 				setDeclined(true);
+				setHasLocation(false);
+			},
+			{
+				enableHighAccuracy: true,
+				timeout: 10000,
+				maximumAge: 60000,
 			}
 		);
 	};
 
+	// Si hay error de autenticación, mostrar botón de ubicación sin datos de usuario
+	if (isUserError) {
+		return (
+			<Button size='lg' variant='secondary' className='mt-6' onClick={handleLocation}>
+				<LocateFixed className='h-5 w-5 text-slate-500 mr-2' />
+				Usar mi ubicación actual
+			</Button>
+		);
+	}
+
 	if (hasLocation) {
-		return <p className='text-sm text-violet-700 pt-10'>Usando tu ubicación actual 📍</p>;
+		return <p className='text-sm pt-5'>Usando tu ubicación actual 📍</p>;
+	}
+
+	if (declined) {
+		return (
+			<div className='mt-6'>
+				<p className='text-sm text-red-500 mb-2'>Has denegado el acceso a tu ubicación</p>
+				<Button size='lg' variant='secondary' onClick={handleLocation}>
+					Intentar nuevamente
+				</Button>
+			</div>
+		);
 	}
 
 	return (

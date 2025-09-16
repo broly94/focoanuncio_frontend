@@ -18,6 +18,8 @@ import { useCreateAddressUser } from '@/hooks/use-user';
 
 import { OrbitProgress } from 'react-loading-indicators';
 import Loading from '@/app/profile/components/Loading';
+import { showToast } from 'nextjs-toast-notify';
+import { AnimatedButton } from '@/components/ui/animated-button';
 
 // -------------------
 // Schema con Zod
@@ -108,27 +110,57 @@ const AdressForm = memo(() => {
 		return null;
 	};
 
-	const onSubmit = (data: AdressFormData) => {
+	const onSubmit = async (data: AdressFormData) => {
 		const location = `${data.province}, ${data.state}, ${data.address}`;
 		// Primero obtenemos lat y lon desde georef
-		addressGeoref.mutateAsync(
-			{ location },
-			{
-				onSuccess: async (res) => {
-					// Si tenemos resultados, creamos la dirección completa y le enviamos los datos a createFullAddress para que arme el objeto de dirección
-					const fullAddress = createFullAddress(data.province, data.state, data.address, data.postalCode, res?.data.results);
-					// Se verifica que exista un usuario logueado y que exista el token de inicio de sesión.
-					if (user?.id !== undefined && token !== null) {
-						// Creamos la direccion del usuario
-						await createUser.mutateAsync({ fullAddress, userId: user.id, token });
-					}
-				},
+
+		try {
+			// Obtenemos coordenadas
+			const georefRes = await addressGeoref.mutateAsync({ location });
+
+			const fullAddress = createFullAddress(data.province, data.state, data.address, data.postalCode, georefRes?.data.results);
+
+			if (user?.id && token) {
+				await createUser.mutateAsync({ fullAddress, userId: user.id, token });
+				alert('✅ Dirección creada correctamente');
 			}
-		);
+		} catch (error: any) {
+			const message = error?.message || 'Ocurrió un error inesperado';
+			const status = error?.status;
+
+			if (status === 409) {
+				showToast.warning('Ya tenes una dirección registrada', {
+					duration: 3000,
+					progress: true,
+					position: 'bottom-right',
+					transition: 'swingInverted',
+					icon: '',
+					sound: true,
+				});
+			} else if (status === 400) {
+				showToast.error('Datos inválidos', {
+					duration: 3000,
+					progress: true,
+					position: 'bottom-right',
+					transition: 'swingInverted',
+					icon: '',
+					sound: true,
+				});
+			} else {
+				showToast.error(`Error inesperado: ${message}`, {
+					duration: 3000,
+					progress: true,
+					position: 'bottom-right',
+					transition: 'swingInverted',
+					icon: '',
+					sound: true,
+				});
+			}
+		}
 	};
 
 	return (
-		<section className='grid grid-cols-1 justify-between w-full'>
+		<section className='grid grid-cols-1 justify-between w-full animate-in fade-in-5 duration-500'>
 			<h2 className='text-center text-xl font-semibold mb-4 text-gray-700'>Dirección</h2>
 
 			<form onSubmit={handleSubmit(onSubmit)} className='text-start grid grid-cols-1 sm:grid-cols-2 grid-rows-4 gap-4'>
@@ -183,11 +215,21 @@ const AdressForm = memo(() => {
 					<Input disabled {...register('country')} />
 				</div>
 
-				<div className='flex justify-end'>
+				<div className='flex justify-center text-center sm:col-span-2'>
 					{/* Corregir defasaje del loader dentro del boton */}
-					<Button variant='success' type='submit' className='mt-4' disabled={addressGeoref.isPending || createUser.isPending}>
-						{addressGeoref.isPending || createUser.isPending ? <Loading /> : 'Guardar dirección'}
-					</Button>
+					{addressGeoref.isPending || createUser.isPending ? (
+						<Loading />
+					) : (
+						<AnimatedButton
+							variant='success'
+							type='submit'
+							size='lg'
+							className='mt-4'
+							disabled={addressGeoref.isPending || createUser.isPending}
+							label='Guardaro Actualizar'
+							withArrow={false}
+						/>
+					)}
 				</div>
 			</form>
 		</section>

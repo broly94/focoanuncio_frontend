@@ -38,7 +38,7 @@ const Dashboard = memo(() => {
 							key={index}
 							href={item.href}
 							onClick={(e) => handleClick(e, item.title)}
-							className={`flex items-center p-1 rounded-lg hover:text-violet-600 transition-colors
+							className={`flex items-center p-1 rounded-lg hover:text-violet-600 transition-transform hover:translate-x-2 duration-200
 								${activeTab === item.title ? 'text-violet-600' : 'text-black'}`}
 						>
 							<span className='text-lg font-medium'>{item.title}</span>

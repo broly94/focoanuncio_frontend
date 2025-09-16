@@ -3,11 +3,12 @@ import Image from 'next/image';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { AnimatedButton } from '@/components/ui/animated-button';
 
 export default function ProfileForm() {
 	const userState = useAuthStore((state) => state.user);
 	return (
-		<section className='flex flex-col gap-5 mb-8'>
+		<section className='flex flex-col gap-5 mb-8 animate-in fade-in-15 duration-500'>
 			<h2 className='text-xl font-semibold mb-4 text-gray-700'>Información Personal</h2>
 			<div className='flex flex-col flex-wrap items-center'>
 				<Image
@@ -23,14 +24,15 @@ export default function ProfileForm() {
 				</div>
 			</div>
 			<div className='flex justify-center'>
-				<Button
-					size='lg'
-					variant='default'
-					className='bg-white text-violet-600 hover:bg-violet-100 mr-4 shadow-md border border-slate-300'
-					asChild
-				>
-					<Link href='/register'>Recuperar contraseña</Link>
-				</Button>
+				<AnimatedButton
+					href='/register'
+					label='Recuperar contraseña'
+					hoverLabel='Recuperar contraseña'
+					withArrow
+					variant='secondary'
+					animation='slideLeft'
+					size='default'
+				/>
 			</div>
 		</section>
 	);

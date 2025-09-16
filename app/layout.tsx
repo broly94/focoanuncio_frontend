@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang='es'>
-			<body className={lato.className}>
+		<html lang='es' suppressHydrationWarning>
+			<body className={inter.className} suppressHydrationWarning>
 				{/* Revisar el validate */}
 				<Providers>
 					<ValidateUserLogin />

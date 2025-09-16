@@ -98,5 +98,9 @@ export function useAdressGeoRef() {
 	return useMutation({
 		mutationKey: ['get state georef'],
 		mutationFn: async ({ location }: { location: string }) => await ApiLocation.getAdressGeoRef(location),
+		onError(error: any) {
+			console.log('Error en useAdressGeoRef: ', error.message, error.status);
+		},
+		retry: false,
 	});
 }

@@ -1,4 +1,6 @@
 import api from '@/lib/axios';
+import { ApiError } from '@/types/api-error';
+import axios, { AxiosResponse } from 'axios';
 
 export class ApiUser {
 	static async login(email: string, password: string) {
@@ -23,6 +25,10 @@ export class ApiUser {
 	}
 
 	static async getCurrentUser(token: string | null) {
+		if (!token) {
+			throw new Error('Token no proporcionado');
+		}
+
 		try {
 			const response = await api.get('/auth/me', { headers: { Authorization: `Bearer ${token}` } });
 			return response.data;
@@ -43,8 +49,7 @@ export class ApiUser {
 			return response.data;
 		} catch (error: any) {
 			console.log(error);
-			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al obtener la dirección del usuario';
-			throw new Error(errorMessage);
+			throw Error(error);
 		}
 	}
 
@@ -68,8 +73,16 @@ export class ApiUser {
 				}
 			);
 		} catch (error: any) {
-			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Hubo un error al crear la dirección.';
-			throw new Error(errorMessage);
+			if (axios.isAxiosError(error)) {
+				const apiError: ApiError = {
+					message: error.response?.data?.message || 'Error en la solicitud',
+					status: error.response?.status || 500,
+					raw: error.response?.data,
+				};
+				throw apiError;
+			}
+
+			throw { message: error.message || 'Error desconocido', status: 500 } as ApiError;
 		}
 	}
 }

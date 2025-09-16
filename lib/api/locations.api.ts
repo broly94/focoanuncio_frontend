@@ -1,4 +1,5 @@
 import api from '@/lib/axios';
+import { ApiError } from '@/types/api-error';
 import axios from 'axios';
 
 export class ApiLocation {
@@ -31,8 +32,16 @@ export class ApiLocation {
 		try {
 			return await api.get(`/google-maps/get-location-text-plain?address=${encodeURIComponent(location)}`);
 		} catch (error: any) {
-			const errorMessage = error.response?.data?.message.split(' :: ')[1] || 'Error al registrar';
-			throw new Error(errorMessage);
+			if (axios.isAxiosError(error)) {
+				const apiError: ApiError = {
+					message: error.response?.data?.message || 'Error en la solicitud',
+					status: error.response?.status || 500,
+					raw: error.response?.data,
+				};
+				throw apiError;
+			}
+
+			throw { message: error.message || 'Error desconocido', status: 500 } as ApiError;
 		}
 	}
 }
