@@ -9,6 +9,7 @@ import UserAvatar from '@/app/login/components/UserAvatar';
 import { ThemeToggle } from './them-toggle-button';
 import { AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion';
 import { Accordion, AccordionContent } from './ui/accordion';
+import { AnimatedButton } from './ui/animated-button';
 
 export default function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,36 +24,36 @@ export default function Header() {
 	};
 
 	return (
-		<header className='bg-slate-50 dark:bg-slate-800 dark:text-white sticky top-0 z-50 shadow-md shadow-slate-200 dark:shadow-slate-700'>
+		<header className='bg-brand-300 text-white sticky top-0 z-50'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='flex justify-between h-16'>
 					<div className='flex'>
 						<div className='flex-shrink-0 flex justify-center items-center flex-row'>
-							<Link href='/' className='text-2xl font-bold'>
+							<Link href='/' className='text-2xl font-bold hover:text-zinc-800'>
 								foco anuncio
 							</Link>
 						</div>
 					</div>
 
 					{/* Desktop navigation */}
-					<nav className='hidden md:ml-6 md:flex md:space-x-8'>
-						<Link href='/' className='inline-flex items-center pt-1 hover:text-brand-500 dark:hover:text-brand-500'>
+					<nav className='hidden md:ml-6 lg:flex md:space-x-8'>
+						<Link href='/' className='inline-flex items-center pt-1 hover:text-zinc-800'>
 							<div className='flex items-center gap-x-1'>
 								<HomeIcon className='h-4 w-4 mr-1' />
 								Inicio
 							</div>
 						</Link>
-						<Link href='/search' className='inline-flex items-center pt-1 hover:text-brand-500 dark:hover:text-brand-500'>
+						<Link href='/search' className='inline-flex items-center pt-1 hover:text-zinc-800'>
 							<div className='flex items-center gap-x-1'>
 								<SearchIcon className='h-4 w-4 mr-1' />
 								Buscar
 							</div>
 						</Link>
-						<Link href='/maps' className='inline-flex items-center pt-1 hover:text-brand-500 dark:hover:text-brand-500'>
+						<Link href='/maps' className='inline-flex items-center pt-1 hover:text-zinc-800'>
 							<Map className='h-4 w-4 mr-1' />
 							Mapas
 						</Link>
-						<Link href='/about' className='inline-flex items-center pt-1 hover:text-brand-500 dark:hover:text-brand-500'>
+						<Link href='/about' className='inline-flex items-center pt-1 hover:text-zinc-800'>
 							<div className='flex items-center gap-x-1'>
 								<MessageCircle className='h-4 w-4 mr-1' />
 								Contactanos
@@ -60,7 +61,7 @@ export default function Header() {
 						</Link>
 					</nav>
 
-					<div className='hidden md:ml-6 md:flex md:items-center'>
+					<div className='hidden md:ml-6 lg:flex md:items-center'>
 						{user != null ? (
 							<>
 								<ThemeToggle />
@@ -104,18 +105,14 @@ export default function Header() {
 						) : (
 							<div className='flex space-x-2'>
 								<ThemeToggle />
-								<Button variant='success' size='default'>
-									<Link href='/login'>Iniciar Sesión</Link>
-								</Button>
-								<Button variant='default' size='default'>
-									<Link href='/register'>Registrarse</Link>
-								</Button>
+								<AnimatedButton variant='default' size='default' label='Iniciar Sesión' href='/login' />
+								<AnimatedButton variant='secondary' withArrow={false} size='default' label='Registrarse' href='/register' />
 							</div>
 						)}
 					</div>
 
 					{/* Mobile menu button */}
-					<div className='flex items-center md:hidden'>
+					<div className='flex items-center lg:hidden'>
 						<button
 							onClick={() => setIsMenuOpen(!isMenuOpen)}
 							className='inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100'
@@ -129,7 +126,7 @@ export default function Header() {
 
 			{/* Mobile menu */}
 			{isMenuOpen && (
-				<div className='md:hidden'>
+				<div className='lg:hidden'>
 					<div className='pt-2 pb-3 space-y-1'>
 						<div className='flex justify-end px-4'>
 							<ThemeToggle />

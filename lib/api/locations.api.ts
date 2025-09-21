@@ -28,9 +28,28 @@ export class ApiLocation {
 		}
 	}
 
-	static async getAdressGeoRef(location: string) {
+	static async getAddressGeoRefWithText(location: string) {
 		try {
 			return await api.get(`/google-maps/get-location-text-plain?address=${encodeURIComponent(location)}`);
+		} catch (error: any) {
+			if (axios.isAxiosError(error)) {
+				const apiError: ApiError = {
+					message: error.response?.data?.message || 'Error en la solicitud',
+					status: error.response?.status || 500,
+					raw: error.response?.data,
+				};
+				throw apiError;
+			}
+
+			throw { message: error.message || 'Error desconocido', status: 500 } as ApiError;
+		}
+	}
+
+	static async getAddressGeoRefWithCoords({ lat, lng }: { lat: number; lng: number }) {
+		try {
+			const data = await api.post(`/google-maps/get-location-with-coords`, { lat, lng });
+			console.log(data);
+			return data;
 		} catch (error: any) {
 			if (axios.isAxiosError(error)) {
 				const apiError: ApiError = {

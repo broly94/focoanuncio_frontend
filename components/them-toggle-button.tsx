@@ -27,7 +27,7 @@ export function ThemeToggle() {
 			variant='ghost'
 			size='icon'
 			onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-			className='rounded-full bg-slate-800 hover:bg-slate-800'
+			className='rounded-full bg-brand-600 hover:bg-brand-600 p-0'
 		>
 			{theme === 'light' ? <Moon className='h-7 w-7 text-yellow-500' /> : <Sun className='h-7 w-7 text-yellow-500' />}
 			<span className='sr-only'>Cambiar tema</span>

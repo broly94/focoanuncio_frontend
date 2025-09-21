@@ -1,14 +1,16 @@
 import type React from 'react';
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { Inter, Lato, Mona_Sans, Roboto_Slab } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
+import '@radix-ui/themes/styles.css';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
 import ValidateUserLogin from '@/components/validate-user-login';
+import { Theme } from '@radix-ui/themes';
 
 const inter = Inter({ subsets: ['latin'] });
-const lato = Mona_Sans({ weight: ['400', '700'], subsets: ['latin'] });
 
 export const metadata: Metadata = {
 	title: 'Estrategias de Marketing',
@@ -22,12 +24,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<body className={inter.className} suppressHydrationWarning>
 				{/* Revisar el validate */}
 				<Providers>
-					<ValidateUserLogin />
-					<div className='flex flex-col min-h-screen'>
-						<Header />
-						<div className='flex min-h-full w-full justify-center'>{children}</div>
-						<Footer />
-					</div>
+					<Suspense fallback={<div>Cargando...</div>}>
+						<ValidateUserLogin />
+						<Theme scaling='110%'>
+							<div className='flex flex-col min-h-screen'>
+								<Header />
+								<div className='flex min-h-full w-full justify-center'>{children}</div>
+								<Footer />
+							</div>
+						</Theme>
+					</Suspense>
 				</Providers>
 			</body>
 		</html>

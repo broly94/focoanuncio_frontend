@@ -9,11 +9,10 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: 'bg-sky-500 text-slate-100 hover:bg-sky-600 shadow-sm',
-				//defaultSoft: 'bg-violet-100 text-violet-500 hover:bg-violet-200 mr-4 shadow-md border border-slate-400',
-				destructive: 'bg-red-200 text-red-900 hover:bg-red-300 border border-red-700 mr-4 shadow-md',
-				success: 'bg-emerald-500 text-slate-100 hover:bg-emerald-600 shadow-sm',
-				secondary: 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-400 mr-4 shadow-md',
+				default: 'bg-brand-600 text-slate-100 hover:bg-brand-500 shadow-sm',
+				destructive: 'bg-red-600 text-slate-100 hover:bg-red-500 shadow-sm',
+				success: 'bg-emerald-400 text-slate-100 hover:bg-emerald-500 shadow-sm',
+				secondary: 'bg-slate-400 text-slate-50 hover:bg-red-600 shadow-sd',
 				ghost: 'hover:bg-accent hover:text-accent-foreground',
 				link: 'text-primary underline-offset-4 hover:underline',
 			},

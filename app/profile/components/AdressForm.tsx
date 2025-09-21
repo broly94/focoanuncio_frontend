@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { useProvinces, useLocalities, useAdressGeoRef } from '@/hooks/use-location';
+import { useProvinces, useLocalities, getAddressGeoRefWithText } from '@/hooks/use-location';
 import useDebounced from '@/hooks/use-debounced';
 import SearchState from '@/app/profile/components/SearchState';
 import { useAuthStore } from '@/lib/store/auth-store';
@@ -82,7 +82,7 @@ const AdressForm = memo(() => {
 		setValue('state', '', { shouldDirty: true, shouldValidate: false });
 	};
 
-	const addressGeoref = useAdressGeoRef();
+	const addressGeoref = getAddressGeoRefWithText();
 
 	const createUser = useCreateAddressUser();
 

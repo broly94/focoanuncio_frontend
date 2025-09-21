@@ -94,13 +94,20 @@ export function useLocalities(provinceId: string, query: string) {
 
 //'https://apis.datos.gob.ar/georef/api/municipios?nombre=la%20plata&provincia=buenos%20aires&campos=id,nombre,provincia,centroide&max=1'
 
-export function useAdressGeoRef() {
+export function getAddressGeoRefWithText() {
 	return useMutation({
-		mutationKey: ['get state georef'],
-		mutationFn: async ({ location }: { location: string }) => await ApiLocation.getAdressGeoRef(location),
+		mutationKey: ['georef-with-text'],
+		mutationFn: async ({ location }: { location: string }) => await ApiLocation.getAddressGeoRefWithText(location),
 		onError(error: any) {
 			console.log('Error en useAdressGeoRef: ', error.message, error.status);
 		},
 		retry: false,
+	});
+}
+
+export function getAddressGeoRefWithCoords() {
+	return useMutation({
+		mutationKey: ['georef-with-cords'],
+		mutationFn: async ({ lat, lng }: { lat: number; lng: number }) => await ApiLocation.getAddressGeoRefWithCoords({ lat, lng }),
 	});
 }

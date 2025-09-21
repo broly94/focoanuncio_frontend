@@ -9,17 +9,25 @@ const config: Config = {
 		'*.{js,ts,jsx,tsx,mdx}',
 	],
 	theme: {
+		container: {
+			center: true,
+		},
 		extend: {
 			colors: {
 				// 🔥 AGREGAMOS TU PALETA PERSONALIZADA (para ambos modos)
 				// Estos son colores "fijos" que no cambian con el tema
 				brand: {
-					50: '#f0f9ff',
-					100: '#e0f2fe',
-					500: '#0ea5e9',
-					600: '#0284c7',
-					700: '#0369a1',
-					900: '#0c4a6e',
+					50: '#e6e9ff',
+					100: '#ccd4ff',
+					200: '#99a9ff',
+					300: '#667eff',
+					400: '#3353ff',
+					500: '#0230B9', // Tu color base
+					600: '#012696',
+					700: '#011d74',
+					800: '#011352',
+					900: '#000a31',
+					950: '#000720',
 				},
 				growth: {
 					50: '#ecfdf5',
@@ -108,6 +116,9 @@ const config: Config = {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
+			},
+			backgroundImage: {
+				'custom-gradient': 'linear-gradient(to bottom, #3353ff, #0b42c8, #003093, #001f60, #000a31)',
 			},
 		},
 	},
